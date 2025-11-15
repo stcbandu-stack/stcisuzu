@@ -137,16 +137,17 @@
 
     }
 
-.price-label {
+    .price-label {
   font-size: 0.9rem;
   color: #666;
   margin-top: 3px;
 }
 
-.price-value {
+    .price-value {
     font-size: 1.5rem;
     font-weight: 600;
     color: #111;
     margin-top: 2px;
 }
+
 
