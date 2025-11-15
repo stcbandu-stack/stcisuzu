@@ -1,0 +1,308 @@
+.price-label {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 3px;
+}
+
+    .price-value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #111;
+    margin-top: 2px;
+}
+
+/* กล่องครอบรุ่นรถ ชั้นนอกสุด (ใหม่) */
+    .car-wrapper {
+      max-width: 980px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 24px 24px 28px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.06);
+    }
+
+    .model-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .model-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .model-select {
+      min-width: 220px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid #ddd;
+      font-size: 0.95rem;
+      background: #f9f9f9;
+      outline: none;
+    }
+
+    .model-select:focus {
+      border-color: #111;
+    }
+
+    /* กล่องเดิมที่มีรูป + swatch */
+    .car-config {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .car-main {
+      background: linear-gradient(135deg, #f0f0f0, #fafafa);
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .car-main img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .color-panel {
+      margin-top: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+      padding: 0 16px 16px;
+    }
+
+    .color-swatches {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .swatch {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      border: 2px solid #ddd;
+      background: var(--swatch-color, #ccc);
+      cursor: pointer;
+      outline: none;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    }
+
+    .swatch::after {
+      content: "";
+      width: 60%;
+      height: 60%;
+      border-radius: 6px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.4), transparent);
+      mix-blend-mode: screen;
+    }
+
+    .swatch:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    .swatch.active {
+      border-color: #111;
+      box-shadow: 0 0 0 3px rgba(0,0,0,0.12);
+    }
+
+    .color-info {
+      min-width: 180px;
+      font-size: 0.95rem;
+    }
+
+    .color-label {
+      font-size: 0.8rem;
+      color: #666;
+    }
+
+    .color-name {
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    /* ซ่อน car-config ที่ไม่ได้เลือก */
+    .car-config[data-visible="false"] {
+      display: none;
+    }
+
+    @media (max-width: 640px) {
+      .color-panel {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+    }
+
+
+/* กล่องนอก ให้เห็นของที่ล้นออกมา */
+.hero-wrapper {
+  max-width: 980px;      /* เท่ากับกล่อง Swatch */
+  margin: 24px auto 0;
+  position: relative;
+  overflow: visible;     /* สำคัญ: ให้รถเลยออกมาได้ */
+  padding: 24px 0;
+}
+
+/* กล่องพื้นหลังด้านใน */
+.hero-banner {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;      /* ตัดแค่พื้นหลังให้โค้ง */
+  background: #000;
+  aspect-ratio: 16 / 6;
+}
+
+/* BG ทราย/ฝุ่น */
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background-image: var(--hero-bg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* รถให้เลยออกมาด้านล่าง/ขวาแบบอาร์ต ๆ */
+.hero-car {
+  position: absolute;
+  bottom: 10%;           /* เลยกรอบลงมานิด ๆ */
+  right: 2%;            /* เลยออกขวานิด ๆ */
+  width: 70%;            /* ขนาดรถ ปรับได้ */
+  aspect-ratio: 16 / 9;  /* ให้มีสัดส่วนเอง จะได้มีความสูง */
+  background-image: var(--hero-car);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  filter: drop-shadow(0 10px 25px rgba(0,0,0,0.35));
+}
+
+/* โลโก้มุมซ้ายบน */
+.hero-logo {
+  position: absolute;
+  left: 3%;
+  top: 6%;
+  width: 32%;
+  max-width: 320px;
+}
+
+/* กล่องรวมไฮไลต์ทั้งหมด */
+.highlight-wrapper {
+  max-width: 980px;          /* กว้างเท่ากับ hero / swatch */
+  margin: 40px auto 0;
+}
+
+.highlight-track {
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  padding-bottom: 16px;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+
+  /* ซ่อนสกรอลล์บาร์ */
+  scrollbar-width: none;          /* Firefox */
+  -ms-overflow-style: none;       /* IE / Edge เก่า */
+}
+
+.highlight-track::-webkit-scrollbar {
+  display: none;                  /* Chrome / Safari / Edge */
+}
+
+/* การ์ดแต่ละใบ */
+.highlight-card {
+  position: relative;
+  flex: 0 0 80%;             /* มือถือเห็นทีละใบ */
+  max-width: 80%;
+  height: 320px;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #000;
+  scroll-snap-align: start;
+}
+
+/* desktop ให้เห็น 2 ใบเหมือนตัวอย่าง */
+@media (min-width: 900px) {
+  .highlight-card {
+    flex: 0 0 48%;
+    max-width: 48%;
+    height: 360px;
+  }
+}
+
+/* รูปพื้นหลังการ์ด */
+.highlight-bg {
+  position: absolute;
+  inset: 0;
+  background-image: var(--highlight-bg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* เฟดดำด้านล่างให้ข้อความอ่านง่าย */
+.highlight-gradient {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 45%;
+  background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0));
+}
+
+/* ข้อความในการ์ด */
+.highlight-content {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 22px;
+  color: #fff;
+}
+
+.highlight-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.highlight-text {
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* จุดบอกตำแหน่งสไลด์ด้านล่าง */
+.highlight-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.highlight-dot {
+  width: 26px;
+  height: 4px;
+  border-radius: 999px;
+  background: #d0d0d0;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.highlight-dot.active {
+  background: #f04444;   /* แดงเข้มหน่อย */
+  transform: scale(1.05);
+}
