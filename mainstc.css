@@ -184,13 +184,11 @@
   bottom: -8%;           /* เลยกรอบลงมานิด ๆ */
   right: -3%;            /* เลยออกขวานิด ๆ */
   width: 60%;            /* ขนาดรถ ปรับได้ */
-  height: auto;
+  aspect-ratio: 16 / 9;  /* ให้มีสัดส่วนเอง จะได้มีความสูง */
   background-image: var(--hero-car);
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center bottom;
-
-  /* optional: ให้ดูเด้ง */
   filter: drop-shadow(0 10px 25px rgba(0,0,0,0.35));
 }
 
