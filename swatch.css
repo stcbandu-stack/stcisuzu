@@ -144,8 +144,9 @@
 }
 
 .price-value {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #111;
-  margin-top: 2px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #111;
+    margin-top: 2px;
 }
+
