@@ -46,4 +46,21 @@
     });
 
     // แสดงรุ่นแรกตอนโหลด
+
     showModel(modelSelect.value);
+
+function showModel(modelValue) {
+  configs.forEach(function(cfg) {
+    if (cfg.dataset.model === modelValue) {
+      cfg.dataset.visible = "true";
+
+      // ★ อัปเดตราคา
+      const priceText = cfg.dataset.price || "";
+      const priceBox = cfg.querySelector(".price-value");
+      if (priceBox) priceBox.textContent = priceText;
+
+    } else {
+      cfg.dataset.visible = "false";
+    }
+  });
+}
