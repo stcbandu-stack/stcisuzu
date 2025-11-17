@@ -1,0 +1,256 @@
+/* ===========================
+   HERO CAROUSEL (stc-hero)
+   =========================== */
+
+.stc-hero {
+  max-width: 3200px;
+  margin: 32px auto 40px;
+  padding: 0 16px;
+}
+
+.stc-hero-main {
+  position: relative;
+  overflow: hidden;
+  min-height: 260px;
+  background: #000;
+}
+
+/* BG ใหญ่ด้านหลัง – เปลี่ยนจาก JS */
+.stc-hero-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transform: scale(1.02);
+}
+
+/* เฟดสีขาวด้านล่าง */
+.stc-hero-fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 45%;
+  background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, #ffffff 100%);
+}
+
+/* ชั้นบนสุดที่วางกล่องข้อมูล */
+.stc-hero-overlay {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  padding: 24px 24px 32px;
+  box-sizing: border-box;
+  height: 100%;
+}
+
+/* กล่องเฟดสีขาวจางด้านขวา */
+.stc-hero-info {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(8px);
+  border-radius: 20px;
+  padding: 18px 22px 22px;
+  max-width: 340px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+}
+
+.stc-hero-logo {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.stc-hero-price-label {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 2px;
+}
+
+.stc-hero-price-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 12px;
+}
+
+.stc-hero-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 24px;
+  border-radius: 999px;
+  border: none;
+  background: #555;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.stc-hero-btn:hover {
+  background: #111;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+}
+
+/* แถวการ์ดเล็กด้านล่าง */
+.stc-hero-thumbs {
+  margin-top: -50px;
+}
+
+.stc-hero-track {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 8px 4px 4px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ซ่อน scrollbar แนวนอน (ถ้าเบราว์เซอร์รองรับ) */
+.stc-hero-track::-webkit-scrollbar {
+  height: 0;
+}
+.stc-hero-track {
+  scrollbar-width: none;
+}
+
+.stc-hero-thumbs {
+  display: flex;
+  justify-content: center;   /* จัด track ให้อยู่กลาง */
+}
+
+.stc-hero-track {
+  display: flex;
+  justify-content: center;   /* จัดการ์ดให้อยู่กลาง */
+  gap: 16px;
+  overflow-x: auto;
+  padding: 8px 4px 4px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  width: max-content;        /* สำคัญมาก: ทำให้ขนาด track เท่ากับความกว้างของการ์ดทั้งหมด */
+  margin: 0 auto;            /* จัด track ให้อยู่ตรงกลาง */
+}
+
+/* การ์ดแต่ละใบ */
+.stc-hero-thumb {
+  flex: 0 0 auto;
+  width: 140px;
+  aspect-ratio: 16 / 9;
+  border-radius: 16px;
+  border: none;
+  padding: 0;
+  background: #000;
+  overflow: hidden;
+  cursor: pointer;
+  scroll-snap-align: center;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+  transform-origin: center center;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    opacity 0.25s ease;
+  opacity: 0.55;
+}
+
+.stc-hero-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* การ์ดที่ active ใหญ่กว่าตัวอื่น อยู่กลาง */
+.stc-hero-thumb.stc-hero-thumb--active {
+  transform: scale(1.18);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.4);
+  opacity: 1;
+}
+
+/* ===========================
+   Responsive
+   =========================== */
+
+@media (max-width: 900px) {
+  .stc-hero-main {
+    min-height: 230px;
+  }
+
+  .stc-hero-overlay {
+    padding: 20px 16px 28px;
+  }
+
+  .stc-hero-info {
+    max-width: 280px;
+  }
+}
+
+@media (max-width: 720px) {
+  .stc-hero-main {
+    min-height: 220px;
+  }
+
+  .stc-hero-overlay {
+    justify-content: center;
+    align-items: flex-end;
+  }
+
+  .stc-hero-info {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+/* ===========================
+   FULL-WIDTH HERO (สำหรับหน้า INDEX)
+   =========================== */
+
+/* กินเต็มหน้ากว้าง */
+.stc-hero-full {
+  width: 100%;
+  margin: 0;
+  padding: 48px 0 56px;
+  background: #ffffff;
+}
+
+/* จำกัดเนื้อหาข้างในไม่ให้ล้น */
+.stc-hero-container {
+  max-width: 1440px;         /* หน้าเว็บ index ส่วนใหญ่ใช้ 1320–1440 */
+  margin: 0 auto;
+  padding: 0 24px;            /* เว้น padding ซ้ายขวาแบบพอดี */
+  box-sizing: border-box;
+}
+
+/* ตัวแบนเนอร์หลัก */
+.stc-hero {
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* ทำให้แบนเนอร์สูงขึ้นเป็นลักษณะ Full-Bleed */
+.stc-hero-main {
+  width: 100%;
+  height: 600px;  /* คุณสามารถแก้สูง-ต่ำตามรูปที่ต้องการได้ */
+  overflow: hidden;
+  position: relative;
+  background: #000;
+}
+
+@media (max-width: 1024px) {
+  .stc-hero-main {
+    height: 340px;
+  }
+}
+
+@media (max-width: 720px) {
+  .stc-hero-main {
+    height: 280px;
+  }
+}
