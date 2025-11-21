@@ -1,0 +1,186 @@
+.stc-footer {
+  padding: 40px 0 24px;
+  font-size: 0.95rem;
+}
+
+.stc-footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.stc-footer-top {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+/* ซ้าย */
+.stc-footer-left {
+  flex: 1 1 40%;
+  min-width: 260px;
+}
+
+.stc-footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stc-footer-logo img {
+  height: 40px;
+  width: auto;
+}
+
+.stc-footer-brand {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.stc-footer-company p,
+.stc-footer-contact p,
+.stc-footer-opening p,
+.stc-footer-map p {
+  margin: 0 0 4px;
+}
+
+.stc-footer-heading {
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.stc-footer-map-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+}
+
+/* ขวา */
+.stc-footer-right {
+  flex: 1 1 55%;
+  min-width: 320px;
+}
+
+/* ไอคอนโซเชียล */
+.stc-footer-social {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.stc-footer-social-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+/* คอลัมน์รุ่นรถ */
+.stc-footer-models {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.stc-footer-model-col {
+  flex: 1 1 30%;
+  min-width: 180px;
+}
+
+.stc-footer-model-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.stc-footer-model-col li {
+  margin-bottom: 4px;
+  position: relative;
+  padding-left: 14px;
+}
+
+/* จุดกลมหน้ารายการ */
+.stc-footer-model-col li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+}
+
+/* กล่องปุ่มแบบสอบถาม */
+.stc-footer-survey {
+  margin: 24px 0 16px;
+}
+
+.stc-footer-survey-btn {
+  width: 100%;
+  padding: 12px 18px;
+  border-radius: 8px;
+  border: 1px solid currentColor;
+  background: transparent;
+  font-size: 0.98rem;
+  text-align: left;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* แถวล่าง */
+.stc-footer-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid rgba(255,255,255,0.08); /* ปรับสีตามธีม */
+  padding-top: 12px;
+  margin-top: 12px;
+}
+
+.stc-footer-menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+}
+
+.stc-footer-menu a {
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.stc-footer-copy {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .stc-footer-top {
+    flex-direction: column;
+  }
+
+  .stc-footer-social {
+    justify-content: flex-start;
+  }
+
+  .stc-footer-survey-btn {
+    text-align: center;
+    justify-content: center;
+  }
+
+  .stc-footer-bottom {
+    align-items: flex-start;
+  }
+}
