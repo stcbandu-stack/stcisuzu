@@ -1,0 +1,76 @@
+/* กล่องใหญ่ */
+.testdrive-banner {
+  position: relative;
+  max-width: 1400px;
+  margin: 40px auto;
+  border-radius: 28px;
+  overflow: hidden;
+  height: 420px;
+}
+
+/* พื้นหลัง */
+.testdrive-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('https://cdn.jsdelivr.net/gh/stcbandu-stack/stcisuzu@main/4drs04.png'); /* เปลี่ยนเป็นรูปจริงของคุณ */
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.65);
+}
+
+/* เนื้อหา */
+.testdrive-content {
+  position: relative;
+  z-index: 2;
+  padding: 60px;
+  color: #fff;
+  max-width: 600px;
+}
+
+/* ข้อความ */
+.testdrive-text {
+  font-size: 1.6rem;
+  line-height: 1.5;
+  font-weight: 400;
+  margin-bottom: 40px;
+}
+
+/* ปุ่ม */
+.testdrive-btn {
+  display: inline-block;
+  padding: 16px 60px;
+  font-size: 2.3rem;
+  font-weight: 800;
+  background: #000;
+  color: #e40000;
+  border: 3px solid #fff;
+  border-radius: 18px;
+  transition: 0.25s ease;
+}
+
+/* Hover → ปุ่มขาว ตัวอักษรแดง */
+.testdrive-btn:hover {
+  background: #fff;
+  color: #e40000;
+  border-color: #000;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .testdrive-banner {
+    height: auto;
+  }
+
+  .testdrive-content {
+    padding: 40px 30px;
+  }
+
+  .testdrive-text {
+    font-size: 1.3rem;
+  }
+
+  .testdrive-btn {
+    font-size: 1.6rem;
+    padding: 14px 40px;
+  }
+}
