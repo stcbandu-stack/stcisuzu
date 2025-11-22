@@ -26,7 +26,7 @@
 }
 
 /* กล่องราคา */
-.model-price {
+.model-price-m {
   display: inline-flex;
   align-items: center;
   border: 2px solid red;
@@ -36,7 +36,7 @@
   overflow: hidden; /* เพื่อให้ hover-box slide ภายใน */
 }
 
-.price-label {
+.price-label-m {
   background: red;
   color: #fff;
   padding: 4px 8px;
@@ -45,7 +45,7 @@
   border-radius: 3px;
 }
 
-.price-value {
+.price-value-m{
   font-size: 1.4rem;
   font-weight: 700;
 }
