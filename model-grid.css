@@ -1,0 +1,83 @@
+/* กริด 3 คอลัมน์ */
+.model-grid {
+  max-width: 1200px;
+  margin: 40px auto;
+  display: grid;
+  gap: 60px;
+  grid-template-columns: repeat(3, 1fr);
+  justify-items: center;
+}
+
+.model-item {
+  text-align: center;
+  position: relative;
+}
+
+.model-img {
+  width: 100%;
+  max-width: 350px;
+  height: auto;
+}
+
+.model-name {
+  margin: 18px 0 12px;
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+/* กล่องราคา */
+.model-price {
+  display: inline-flex;
+  align-items: center;
+  border: 2px solid red;
+  border-radius: 4px;
+  padding: 6px 14px;
+  position: relative;
+  overflow: hidden; /* เพื่อให้ hover-box slide ภายใน */
+}
+
+.price-label {
+  background: red;
+  color: #fff;
+  padding: 4px 8px;
+  margin-right: 12px;
+  font-size: 0.9rem;
+  border-radius: 3px;
+}
+
+.price-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+/* Hover box — แอบอยู่ด้านล่างก่อน */
+.model-hover-box {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -100%;
+  background: #f3f3f3;
+  padding: 10px;
+  transition: bottom 0.25s ease-out;
+  text-align: center;
+}
+
+.model-hover-link {
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: underline;
+  color: #222;
+}
+
+/* ชี้ที่กล่องราคา → กล่องเทาเลื่อนขึ้น */
+.model-price:hover .model-hover-box {
+  bottom: 0;
+}
+
+/* มือถือ 1 คอลัมน์ */
+@media (max-width: 768px) {
+  .model-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+}
