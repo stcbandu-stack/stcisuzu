@@ -1,0 +1,105 @@
+.campaign-section {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 16px 40px;
+  text-align: center;
+}
+
+.campaign-title {
+  font-size: 2.3rem;
+  font-weight: 800;
+  margin-bottom: 24px;
+}
+
+/* พื้นที่แสดงสไลด์ */
+.campaign-carousel {
+  position: relative;
+  height: 420px;          /* สูงพอสำหรับโปสเตอร์ + เงา */
+  margin-top: 20px;
+}
+
+/* ทุกสไลด์วางซ้อนกัน แล้วใช้ class บอกว่าเป็นซ้าย/กลาง/ขวา */
+.campaign-slide {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 28%;  /* เดิม 30% – ลดนิดให้มีที่ว่าง */
+  transform: translate(-50%, -50%) scale(0.8);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  cursor: pointer;
+}
+
+/* ใบกลาง */https://scontent.fbkk5-1.fna.fbcdn.net/v/t39.30808-6/573414668_841310838392393_8896135974923366920_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=127cfc&_nc_ohc=R4Px43RqoCIQ7kNvwFemhop&_nc_oc=Adn6seNhTo824_xQR2SoPnSC0b7ucD4GQ80wtyxaBdo_KruxQrVsXor-Ij72hbvdKqw&_nc_zt=23&_nc_ht=scontent.fbkk5-1.fna&_nc_gid=68qsWJKafQdVQwVT6e9ZDQ&oh=00_AfgO4IjtjGIGhTFmWyyel4lW_3CGoPko7mnpCla4QxLHIw&oe=69298FD4
+.campaign-slide.is-active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) scale(1);
+  z-index: 3;
+}
+
+/* ใบซ้าย – ขยับไปทางซ้ายให้ห่างขึ้น */
+.campaign-slide.is-left {
+  opacity: 0.75;
+  pointer-events: auto;
+  transform: translate(-165%, -50%) scale(0.9);  /* เดิม -120% */
+  z-index: 2;
+}
+
+/* ใบขวา – ขยับไปทางขวาให้ห่างขึ้น */
+.campaign-slide.is-right {
+  opacity: 0.75;
+  pointer-events: auto;
+  transform: translate(65%, -50%) scale(0.9);    /* เดิม 20% */
+  z-index: 2;
+}
+
+/* โปสเตอร์อัตราส่วน 4:5 */
+.campaign-poster {
+  margin: 0;
+  aspect-ratio: 4 / 5;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.18);
+}
+.campaign-poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* CTA ล่าง */
+.campaign-cta {
+  display: inline-block;
+  margin-top: 28px;
+  padding: 12px 32px;
+  border-radius: 8px;
+  border: 2px solid #f00000;
+  font-weight: 700;
+  text-decoration: none;
+  color: #f00000 !important;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.campaign-cta:hover {
+  background: #f00000;
+  color: #fff;
+}
+
+/* มือถือ – ให้กินกว้างมากหน่อย */
+@media (max-width: 768px) {
+  .campaign-carousel {
+    height: 380px;
+  }
+  .campaign-slide,
+  .campaign-slide.is-active {
+    width: 70%;
+  }
+  .campaign-slide.is-left {
+    transform: translate(-130%, -50%) scale(0.85);
+  }
+  .campaign-slide.is-right {
+    transform: translate(30%, -50%) scale(0.85);
+  }
+}
