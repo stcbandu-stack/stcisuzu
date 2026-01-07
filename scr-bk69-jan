@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สรุปยอดจองรถมือสอง 2569</title>
+    
+    <!-- Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    
+    <!-- Google Fonts: Sarabun -->
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Sarabun', sans-serif; background-color: #f3f4f6; }
+        .card { background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transition: transform 0.2s; }
+        .card:hover { transform: translateY(-2px); }
+        .chart-container { position: relative; height: 300px; width: 100%; }
+        .loading-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(255,255,255,0.9); z-index: 50; display: flex; justify-content: center; align-items: center; flex-direction: column; }
+    </style>
+</head>
+<body class="text-gray-700">
+
+    <!-- Loading Screen -->
+    <div id="loading" class="loading-overlay">
+        <i class="fas fa-circle-notch fa-spin text-4xl text-blue-600 mb-4"></i>
+        <h2 class="text-xl font-bold">กำลังดึงข้อมูลจาก Google Sheets...</h2>
+        <p class="text-gray-500 text-sm mt-2">กรุณารอสักครู่</p>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8 max-w-7xl" id="dashboard" style="display: none;">
+        
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-blue-900"><i class="fas fa-car-side mr-2"></i>Dashboard ยอดจองรถมือสอง 2569</h1>
+                <p class="text-gray-500 mt-1">ข้อมูล Real-time จาก Google Sheets</p>
+            </div>
+            <div class="mt-4 md:mt-0 text-right">
+                <div class="text-sm text-gray-500">อัปเดตล่าสุด</div>
+                <div id="last-update" class="font-semibold text-blue-600">-</div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="card p-6 mb-8 border-l-4 border-blue-500">
+            <h3 class="font-bold text-lg mb-4 flex items-center"><i class="fas fa-filter mr-2"></i>ตัวกรองข้อมูล</h3>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">สาขา</label>
+                    <select id="filter-branch" class="w-full border-gray-300 rounded-md shadow-sm p-2 border focus:ring-blue-500 focus:border-blue-500">
+                        <option value="all">ทั้งหมด</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">ไฟแนนซ์</label>
+                    <select id="filter-finance" class="w-full border-gray-300 rounded-md shadow-sm p-2 border focus:ring-blue-500 focus:border-blue-500">
+                        <option value="all">ทั้งหมด</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">เซลล์ (SC)</label>
+                    <select id="filter-sales" class="w-full border-gray-300 rounded-md shadow-sm p-2 border focus:ring-blue-500 focus:border-blue-500">
+                        <option value="all">ทั้งหมด</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">สถานะ</label>
+                    <select id="filter-status" class="w-full border-gray-300 rounded-md shadow-sm p-2 border focus:ring-blue-500 focus:border-blue-500">
+                        <option value="all">ทั้งหมด</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="card p-6 bg-blue-600 text-white">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-blue-100 text-sm font-medium">ยอดจองทั้งหมด</p>
+                        <h2 id="kpi-total" class="text-4xl font-bold mt-2">0</h2>
+                    </div>
+                    <div class="p-2 bg-blue-500 rounded-lg">
+                        <i class="fas fa-clipboard-list text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4 text-xs text-blue-200">เคสรวมทุกสถานะ</div>
+            </div>
+
+            <div class="card p-6 bg-emerald-500 text-white">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-emerald-100 text-sm font-medium">ยอดเดือนมกราคม</p>
+                        <h2 id="kpi-jan" class="text-4xl font-bold mt-2">0</h2>
+                    </div>
+                    <div class="p-2 bg-emerald-400 rounded-lg">
+                        <i class="fas fa-calendar-check text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4 text-xs text-emerald-100">Booking ใหม่ปี 2569</div>
+            </div>
+
+            <div class="card p-6 bg-orange-500 text-white">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-orange-100 text-sm font-medium">ยอดยกมา</p>
+                        <h2 id="kpi-carried" class="text-4xl font-bold mt-2">0</h2>
+                    </div>
+                    <div class="p-2 bg-orange-400 rounded-lg">
+                        <i class="fas fa-history text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4 text-xs text-orange-100">ยกมาจากเดือนก่อนหน้า</div>
+            </div>
+
+            <div class="card p-6 bg-purple-600 text-white">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-purple-100 text-sm font-medium">รุ่นยอดนิยม</p>
+                        <h2 id="kpi-top-model" class="text-xl font-bold mt-2 truncate">-</h2>
+                    </div>
+                    <div class="p-2 bg-purple-500 rounded-lg">
+                        <i class="fas fa-trophy text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4 text-xs text-purple-200">รุ่นที่มีการจองสูงสุด</div>
+            </div>
+        </div>
+
+        <!-- Charts Grid 1 -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Finance Chart -->
+            <div class="card p-6">
+                <h3 class="font-bold text-gray-700 mb-4 text-lg border-b pb-2">จำนวนเคสแยกตามไฟแนนซ์</h3>
+                <div class="chart-container">
+                    <canvas id="financeChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Status by Finance -->
+            <div class="card p-6">
+                <h3 class="font-bold text-gray-700 mb-4 text-lg border-b pb-2">สถานะงานของแต่ละไฟแนนซ์</h3>
+                <div class="chart-container">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Grid 2 -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            <!-- Branch -->
+            <div class="card p-6">
+                <h3 class="font-bold text-gray-700 mb-4 text-lg border-b pb-2">สัดส่วนตามสาขา</h3>
+                <div class="chart-container" style="height: 250px;">
+                    <canvas id="branchChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Down Payment -->
+            <div class="card p-6">
+                <h3 class="font-bold text-gray-700 mb-4 text-lg border-b pb-2">กลุ่มเปอร์เซ็นต์ดาวน์</h3>
+                <div class="chart-container" style="height: 250px;">
+                    <canvas id="downPaymentChart"></canvas>
+                </div>
+            </div>
+
+             <!-- Booking Type (Month Logic) -->
+             <div class="card p-6">
+                <h3 class="font-bold text-gray-700 mb-4 text-lg border-b pb-2">ประเภทการจอง (เดือน)</h3>
+                <div class="chart-container" style="height: 250px;">
+                    <canvas id="monthTypeChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Grid 3 -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Top Sales -->
+            <div class="card p-6">
+                <h3 class="font-bold text-gray-700 mb-4 text-lg border-b pb-2">Top 5 เซลล์ยอดเยี่ยม</h3>
+                <div class="chart-container">
+                    <canvas id="salesChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Top Models -->
+            <div class="card p-6">
+                <h3 class="font-bold text-gray-700 mb-4 text-lg border-b pb-2">Top 10 รุ่นรถยอดนิยม (ยี่ห้อ + รุ่น)</h3>
+                <div class="chart-container">
+                    <canvas id="modelChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div id="error-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex justify-center items-center z-50">
+        <div class="bg-white p-8 rounded-lg max-w-md text-center">
+            <i class="fas fa-exclamation-triangle text-yellow-500 text-5xl mb-4"></i>
+            <h2 class="text-2xl font-bold mb-2">ไม่สามารถโหลดข้อมูลได้</h2>
+            <p id="error-message" class="text-gray-600 mb-6">กรุณาตรวจสอบ URL หรือสิทธิ์การเข้าถึงไฟล์</p>
+            <button onclick="location.reload()" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition">ลองใหม่อีกครั้ง</button>
+        </div>
+    </div>
+
+    <script>
+        // --- Configuration ---
+        const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT7Us7qH3I4YOsfRgIKYGd9ZAuefUOJVd2XEQHdhDEbjO2bAVBsYfBui9bWnkTU4e08iJxDzAuwO-CV/pub?gid=409516882&single=true&output=csv';
+
+        // Global Variables
+        let rawData = [];
+        let charts = {};
+        
+        // Mapping Config (Keywords to look for in CSV headers)
+        // Adjust these keywords if your actual column names are different!
+        const KEYWORDS = {
+            finance: ['ไฟแนนซ์', 'finance', 'สถาบันการเงิน'],
+            status: ['สถานะ', 'status', 'ผลอนุมัติ'],
+            branch: ['สาขา', 'branch', 'location'],
+            down: ['ดาวน์', 'down', 'เงินดาวน์', '%'],
+            sales: ['SC', 'เซลล์', 'sale', 'พนักงานขาย', 'salesperson'], // Added 'SC' as priority
+            brand: ['ยี่ห้อ', 'brand', 'make'], // New keyword for Brand
+            model: ['รุ่น', 'model', 'series'],
+            date: ['วันที่', 'date', 'วันจอง', 'booking date']
+        };
+
+        // --- Main Execution ---
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchData();
+            document.getElementById('last-update').innerText = new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute:'2-digit' });
+        });
+
+        // --- Data Fetching & Parsing ---
+        function fetchData() {
+            Papa.parse(SHEET_CSV_URL, {
+                download: true,
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    if (results.data && results.data.length > 0) {
+                        processData(results.data, results.meta.fields);
+                        document.getElementById('loading').style.display = 'none';
+                        document.getElementById('dashboard').style.display = 'block';
+                    } else {
+                        showError("ไม่พบข้อมูลในไฟล์ CSV");
+                    }
+                },
+                error: function(err) {
+                    showError("เกิดข้อผิดพลาดในการโหลด: " + err.message);
+                }
+            });
+        }
+
+        function showError(msg) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error-message').innerText = msg;
+            document.getElementById('error-modal').classList.remove('hidden');
+        }
+
+        // --- Data Processing ---
+        function processData(data, headers) {
+            // 1. Identify Columns
+            const cols = mapColumns(headers);
+            console.log("Mapped Columns:", cols);
+
+            // 2. Clean and Structure Data
+            rawData = data.map(row => {
+                const dateStr = row[cols.date] || "";
+                let monthType = "Unknown";
+                
+                // Logic: Check Date (Assume DD/MM/YYYY or YYYY-MM-DD)
+                // If Month is Jan -> "มกราคม (ใหม่)", else -> "ยอดยกมา"
+                try {
+                    // Simple parsing attempt
+                    let month = -1;
+                    if (dateStr.includes('/')) {
+                        const parts = dateStr.split('/');
+                        // Assume DD/MM/YYYY or MM/DD/YYYY? Usually Thai uses DD/MM/YYYY
+                        month = parseInt(parts[1]); 
+                    } else if (dateStr.includes('-')) {
+                        const parts = dateStr.split('-');
+                        month = parseInt(parts[1]);
+                    }
+
+                    if (month === 1) monthType = "มกราคม";
+                    else if (!isNaN(month)) monthType = "ยอดยกมา";
+                    else monthType = "ยอดยกมา"; // Default fallback if no date
+
+                } catch (e) {
+                    monthType = "ยอดยกมา";
+                }
+
+                // Combine Brand and Model
+                const brandStr = (row[cols.brand] || "").trim();
+                const modelStr = (row[cols.model] || "").trim();
+                let fullModel = "ไม่ระบุ";
+                
+                if (brandStr && modelStr) {
+                    // Check if model string already contains brand string to avoid "Honda Honda City"
+                    if (modelStr.toLowerCase().startsWith(brandStr.toLowerCase())) {
+                        fullModel = modelStr;
+                    } else {
+                        fullModel = `${brandStr} ${modelStr}`;
+                    }
+                } else if (brandStr) {
+                    fullModel = brandStr;
+                } else if (modelStr) {
+                    fullModel = modelStr;
+                }
+
+                return {
+                    finance: row[cols.finance] || "ไม่ระบุ",
+                    status: row[cols.status] || "รอผล",
+                    branch: row[cols.branch] || "สำนักงานใหญ่",
+                    down: row[cols.down] || "0",
+                    sales: row[cols.sales] || "ไม่ระบุ", // Uses SC column if mapped
+                    model: fullModel,
+                    monthType: monthType,
+                    rawDate: dateStr
+                };
+            });
+
+            // 3. Populate Dropdown Filters
+            populateFilters();
+
+            // 4. Initial Render
+            updateDashboard();
+
+            // 5. Add Event Listeners
+            ['filter-branch', 'filter-finance', 'filter-sales', 'filter-status'].forEach(id => {
+                document.getElementById(id).addEventListener('change', updateDashboard);
+            });
+        }
+
+        function mapColumns(headers) {
+            const map = {};
+            for (const key in KEYWORDS) {
+                // Find a header that includes one of the keywords
+                const match = headers.find(h => KEYWORDS[key].some(k => h.toLowerCase() === k.toLowerCase() || h.toLowerCase().includes(k.toLowerCase())));
+                // Prefer exact match for short codes like 'SC'
+                const exactMatch = headers.find(h => KEYWORDS[key].some(k => h === k));
+                
+                map[key] = exactMatch || match || headers[0]; // Fallback to first column if failed
+            }
+            return map;
+        }
+
+        function populateFilters() {
+            const filters = {
+                'filter-branch': 'branch',
+                'filter-finance': 'finance',
+                'filter-sales': 'sales',
+                'filter-status': 'status'
+            };
+
+            for (const [id, key] of Object.entries(filters)) {
+                const uniqueValues = [...new Set(rawData.map(item => item[key]))].sort();
+                const select = document.getElementById(id);
+                uniqueValues.forEach(val => {
+                    if(val && val !== "ไม่ระบุ") {
+                        const option = document.createElement('option');
+                        option.value = val;
+                        option.innerText = val;
+                        select.appendChild(option);
+                    }
+                });
+            }
+        }
+
+        // --- Dashboard Update Logic ---
+        function updateDashboard() {
+            // 1. Get Filter Values
+            const filterBranch = document.getElementById('filter-branch').value;
+            const filterFinance = document.getElementById('filter-finance').value;
+            const filterSales = document.getElementById('filter-sales').value;
+            const filterStatus = document.getElementById('filter-status').value;
+
+            // 2. Filter Data
+            const filteredData = rawData.filter(item => {
+                return (filterBranch === 'all' || item.branch === filterBranch) &&
+                       (filterFinance === 'all' || item.finance === filterFinance) &&
+                       (filterSales === 'all' || item.sales === filterSales) &&
+                       (filterStatus === 'all' || item.status === filterStatus);
+            });
+
+            // 3. Update KPIs
+            const janCount = filteredData.filter(d => d.monthType === 'มกราคม').length;
+            const carriedCount = filteredData.filter(d => d.monthType === 'ยอดยกมา').length;
+            
+            // Find top model
+            const modelCounts = countBy(filteredData, 'model');
+            const topModel = Object.entries(modelCounts).sort((a,b) => b[1] - a[1])[0];
+
+            animateValue("kpi-total", filteredData.length);
+            animateValue("kpi-jan", janCount);
+            animateValue("kpi-carried", carriedCount);
+            document.getElementById("kpi-top-model").innerText = topModel ? `${topModel[0]} (${topModel[1]})` : "-";
+
+            // 4. Update Charts
+            renderFinanceChart(filteredData);
+            renderStatusChart(filteredData);
+            renderBranchChart(filteredData);
+            renderDownPaymentChart(filteredData);
+            renderSalesChart(filteredData);
+            renderModelChart(filteredData);
+            renderMonthTypeChart(filteredData);
+        }
+
+        // --- Chart Rendering Functions ---
+
+        function renderFinanceChart(data) {
+            const ctx = document.getElementById('financeChart').getContext('2d');
+            const counts = countBy(data, 'finance');
+            // Sort by count desc
+            const sorted = Object.entries(counts).sort((a,b) => b[1] - a[1]);
+            
+            destroyChart('financeChart');
+            charts['financeChart'] = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: sorted.map(i => i[0]),
+                    datasets: [{
+                        label: 'จำนวนเคส',
+                        data: sorted.map(i => i[1]),
+                        backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                        borderColor: 'rgba(59, 130, 246, 1)',
+                        borderWidth: 1,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        }
+
+        function renderStatusChart(data) {
+            const ctx = document.getElementById('statusChart').getContext('2d');
+            
+            // Pivot Data: Finance x Status
+            const finances = [...new Set(data.map(d => d.finance))];
+            const statuses = [...new Set(data.map(d => d.status))];
+            
+            const datasets = statuses.map((status, index) => {
+                const color = getColor(index);
+                return {
+                    label: status,
+                    data: finances.map(fin => data.filter(d => d.finance === fin && d.status === status).length),
+                    backgroundColor: color,
+                    stack: 'Stack 0',
+                };
+            });
+
+            destroyChart('statusChart');
+            charts['statusChart'] = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: finances,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { x: { stacked: true }, y: { stacked: true } }
+                }
+            });
+        }
+
+        function renderBranchChart(data) {
+            const ctx = document.getElementById('branchChart').getContext('2d');
+            const counts = countBy(data, 'branch');
+            
+            destroyChart('branchChart');
+            charts['branchChart'] = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(counts),
+                    datasets: [{
+                        data: Object.values(counts),
+                        backgroundColor: Object.keys(counts).map((_, i) => getColor(i, true)),
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '60%',
+                    plugins: { legend: { position: 'right' } }
+                }
+            });
+        }
+
+        function renderDownPaymentChart(data) {
+            const ctx = document.getElementById('downPaymentChart').getContext('2d');
+            
+            // Categorize Down Payment
+            const groups = {};
+            data.forEach(item => {
+                let key = item.down;
+                // Check if numeric to group
+                const val = parseFloat(item.down.replace(/%|,/g, ''));
+                if (!isNaN(val)) {
+                    if (val < 10) key = "ต่ำกว่า 10%";
+                    else if (val < 20) key = "10% - 19%";
+                    else if (val < 30) key = "20% - 29%";
+                    else key = "30% ขึ้นไป";
+                }
+                groups[key] = (groups[key] || 0) + 1;
+            });
+
+            destroyChart('downPaymentChart');
+            charts['downPaymentChart'] = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(groups),
+                    datasets: [{
+                        data: Object.values(groups),
+                        backgroundColor: ['#F59E0B', '#10B981', '#3B82F6', '#6366F1', '#8B5CF6'],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'right' } }
+                }
+            });
+        }
+
+        function renderSalesChart(data) {
+            const ctx = document.getElementById('salesChart').getContext('2d');
+            const counts = countBy(data, 'sales');
+            const sorted = Object.entries(counts).sort((a,b) => b[1] - a[1]).slice(0, 5); // Top 5
+            
+            destroyChart('salesChart');
+            charts['salesChart'] = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: sorted.map(i => i[0]),
+                    datasets: [{
+                        label: 'จำนวนเคส',
+                        data: sorted.map(i => i[1]),
+                        backgroundColor: 'rgba(16, 185, 129, 0.7)',
+                        borderRadius: 4,
+                        indexAxis: 'y', // Horizontal Bar
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function renderModelChart(data) {
+            const ctx = document.getElementById('modelChart').getContext('2d');
+            const counts = countBy(data, 'model');
+            const sorted = Object.entries(counts).sort((a,b) => b[1] - a[1]).slice(0, 10); // Top 10
+            
+            destroyChart('modelChart');
+            charts['modelChart'] = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: sorted.map(i => i[0]),
+                    datasets: [{
+                        label: 'จำนวนคัน',
+                        data: sorted.map(i => i[1]),
+                        backgroundColor: 'rgba(139, 92, 246, 0.7)',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function renderMonthTypeChart(data) {
+            const ctx = document.getElementById('monthTypeChart').getContext('2d');
+            const counts = countBy(data, 'monthType');
+            
+            destroyChart('monthTypeChart');
+            charts['monthTypeChart'] = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(counts),
+                    datasets: [{
+                        data: Object.values(counts),
+                        backgroundColor: ['#10B981', '#F59E0B'], // Green for Jan, Orange for Carried
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: { 
+                        legend: { position: 'bottom' },
+                        title: { display: true, text: 'สัดส่วนงานใหม่ vs ยอดยกมา' }
+                    }
+                }
+            });
+        }
+
+        // --- Utilities ---
+        function countBy(array, key) {
+            return array.reduce((acc, curr) => {
+                acc[curr[key]] = (acc[curr[key]] || 0) + 1;
+                return acc;
+            }, {});
+        }
+
+        function destroyChart(id) {
+            if (charts[id]) {
+                charts[id].destroy();
+            }
+        }
+
+        function getColor(index, isPastel = false) {
+            const colors = [
+                '#3B82F6', '#EF4444', '#10B981', '#F59E0B', '#8B5CF6', 
+                '#EC4899', '#6366F1', '#14B8A6', '#F97316', '#64748B'
+            ];
+            return colors[index % colors.length];
+        }
+
+        function animateValue(id, end) {
+            const obj = document.getElementById(id);
+            const start = parseInt(obj.innerText) || 0;
+            if (start === end) return;
+            
+            let current = start;
+            const range = end - start;
+            const stepTime = Math.abs(Math.floor(1000 / range));
+            const timer = setInterval(() => {
+                current += range > 0 ? 1 : -1;
+                obj.innerText = current;
+                if (current == end) {
+                    clearInterval(timer);
+                }
+            }, Math.max(stepTime, 20)); // Min 20ms
+        }
+    </script>
+</body>
+</html>
